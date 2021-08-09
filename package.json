@@ -27,7 +27,6 @@
     "@graphql-tools/merge": "^7.0.0",
     "@graphql-tools/stitch": "^8.0.8",
     "apollo-server-express": "^3.1.2",
-    "babel-jest": "^27.0.6",
     "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
@@ -43,7 +42,7 @@
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
     "test-server": "NODE_ENV=test ts-node src/index.ts",
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
     "ci": "start-server-and-test 'yarn test-server' https://studio.apollographql.com/sandbox/explorer?endpoint=http%3A%2F%2Flocalhost%3A4000%2Fgraphql 'yarn test'",
     "gen-schema-types": "graphql-codegen --config codegen.yml"
   },
