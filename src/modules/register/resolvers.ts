@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../types/schema';
+import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
 import { formatYupError } from '../../utils/formatYupError';
 
 const schema = yup.object().shape({
@@ -12,7 +13,7 @@ const schema = yup.object().shape({
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    register: async (_: any, args: MutationRegisterArgs) => {
+    register: async (_: any, args: MutationRegisterArgs, { redis, url }) => {
       try {
         await schema.validate(args, { abortEarly: false });
       } catch (err) {
@@ -40,6 +41,9 @@ export const resolvers: ResolverMap = {
       });
 
       await user.save();
+
+      const link = await createConfirmEmailLink(url, user.id, redis);
+
       return null;
     },
   },
