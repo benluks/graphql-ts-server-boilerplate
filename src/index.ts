@@ -1,6 +1,4 @@
 const express = require('express');
-import { Request, Response } from 'express';
-// import * as express from
 import { ApolloServer } from 'apollo-server-express';
 import { createTypeormConn } from './utils/createTypeormConn';
 
@@ -9,8 +7,8 @@ import * as path from 'path';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { GraphQLSchema } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
-import * as Redis from 'ioredis';
-import { User } from './entity/User';
+import { redis } from './redis';
+import { confirmEmail } from './routes/confirmEmail';
 
 export const startServer = async () => {
   const schemas: GraphQLSchema[] = [];
@@ -21,9 +19,6 @@ export const startServer = async () => {
 
     schemas.push(makeExecutableSchema({ resolvers, typeDefs }));
   });
-
-  const redis = new Redis();
-
   const app = express();
   const server = new ApolloServer({
     schema: mergeSchemas({ schemas }),
@@ -33,17 +28,7 @@ export const startServer = async () => {
     }),
   });
 
-  app.get('/confirm/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const userId: any = await redis.get(id);
-    if (userId) {
-      await User.update({ id: userId }, { confirmed: true });
-      await redis.del(id);
-      res.send('ok');
-    } else {
-      res.send('invalid');
-    }
-  });
+  app.get('/confirm/:id', confirmEmail);
 
   await createTypeormConn();
   await server.start();
