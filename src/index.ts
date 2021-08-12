@@ -2,19 +2,29 @@ const express = require('express');
 import { ApolloServer } from 'apollo-server-express';
 import { createTypeormConn } from './utils/createTypeormConn';
 import * as session from 'express-session';
+import * as connectRedis from 'connect-redis';
+
 import { redis } from './redis';
 import { confirmEmail } from './routes/confirmEmail';
 import { genSchema } from './utils/generateSchema';
 
 const SESSION_SECRET = 'dfwhjebqkbgi37';
+const RedisStore = connectRedis(session);
 
 export const startServer = async () => {
   const app = express();
+
+  const cors = {
+    credentials: true,
+    origin: 'http://localhost:3000',
+  };
+
   const server = new ApolloServer({
     schema: genSchema(),
     context: ({ req }) => ({
       redis,
       url: req.protocol + '://' + req.get('host'),
+      cors,
     }),
   });
 
@@ -22,6 +32,7 @@ export const startServer = async () => {
 
   app.use(
     session({
+      store: new RedisStore({}),
       name: 'bid',
       secret: SESSION_SECRET,
       resave: false,
