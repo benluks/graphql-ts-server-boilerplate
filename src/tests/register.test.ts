@@ -7,10 +7,6 @@ beforeAll(async () => {
   await createTypeormConn();
 });
 
-// const email = 'b';
-// const password = 'te';
-
-// test email and password login
 const mutation = (e: string, p: string) => `
   mutation {
     register(email: "${e}", password: "${p}") {
