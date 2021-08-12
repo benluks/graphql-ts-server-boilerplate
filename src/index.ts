@@ -1,10 +1,12 @@
 const express = require('express');
 import { ApolloServer } from 'apollo-server-express';
 import { createTypeormConn } from './utils/createTypeormConn';
-
+import * as session from 'express-session';
 import { redis } from './redis';
 import { confirmEmail } from './routes/confirmEmail';
 import { genSchema } from './utils/generateSchema';
+
+const SESSION_SECRET = 'dfwhjebqkbgi37';
 
 export const startServer = async () => {
   const app = express();
@@ -17,6 +19,20 @@ export const startServer = async () => {
   });
 
   app.get('/confirm/:id', confirmEmail);
+
+  app.use(
+    session({
+      name: 'bid',
+      secret: SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV == 'production',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      },
+    })
+  );
 
   await createTypeormConn();
   await server.start();
