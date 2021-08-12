@@ -5,6 +5,7 @@ import { host } from '../../tests/constants';
 import { createTypeormConn } from '../../utils/createTypeormConn';
 
 // let userId: string;
+let userId: string;
 let conn: Connection;
 
 const email = 'ben10@ben.com';
@@ -12,11 +13,12 @@ const password = 'sjnkjngkjenkjgan';
 
 beforeAll(async () => {
   conn = await createTypeormConn();
-  await User.create({
+  const user = await User.create({
     email,
     password,
     confirmed: true,
   }).save();
+  userId = user.id;
 });
 
 afterAll(async () => {
@@ -53,6 +55,6 @@ describe('me', () => {
       { withCredentials: true }
     );
 
-    console.log(response);
+    expect(response.data.data.me).toEqual({ email, id: userId });
   });
 });
