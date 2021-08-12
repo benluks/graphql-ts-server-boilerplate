@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import * as yup from 'yup';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/graphql-utils';
-import { MutationRegisterArgs } from '../../types/schema';
+import { GQL } from '../../types/schema';
 import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
 import { formatYupError } from '../../utils/formatYupError';
 
@@ -13,7 +13,11 @@ const schema = yup.object().shape({
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    register: async (_: any, args: MutationRegisterArgs, { redis, url }) => {
+    register: async (
+      _: any,
+      args: GQL.IRegisterOnMutationArguments,
+      { redis, url }
+    ) => {
       try {
         await schema.validate(args, { abortEarly: false });
       } catch (err) {

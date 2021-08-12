@@ -21,5 +21,11 @@
     "experimentalDecorators": true
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.tsx", "./src/**/*.ts"]
+  "include": [
+    "./src/**/*.tsx",
+    "./src/**/*.ts",
+    "src/modules/register/schema.ts",
+    "src/modules/tmp/schema.tsa.ts",
+    "schema2.ts"
+  ]
 }

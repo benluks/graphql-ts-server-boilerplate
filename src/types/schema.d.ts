@@ -1,39 +1,56 @@
-export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]: Maybe<T[SubKey]> };
-/** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-};
+// tslint:disable
+// graphql typescript definitions
 
-export type Error = {
-  __typename?: 'Error';
-};
+export namespace GQL {
+  interface IGraphQLResponseRoot {
+    data?: IQuery | IMutation;
+    errors?: Array<IGraphQLResponseError>;
+  }
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  register?: Maybe<Scalars['Boolean']>;
-};
+  interface IGraphQLResponseError {
+    /** Required for all errors */
+    message: string;
+    locations?: Array<IGraphQLResponseErrorLocation>;
+    /** 7.2.2 says 'GraphQL servers may provide additional entries to error' */
+    [propName: string]: any;
+  }
 
-export type MutationRegisterArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
+  interface IGraphQLResponseErrorLocation {
+    line: number;
+    column: number;
+  }
 
-export type Query = {
-  __typename?: 'Query';
-  hello?: Maybe<Scalars['String']>;
-};
+  interface IQuery {
+    __typename: 'Query';
+    quer: string | null;
+    hello: string;
+  }
 
-export type QueryHelloArgs = {
-  name?: Maybe<Scalars['String']>;
-};
+  interface IHelloOnQueryArguments {
+    name?: string | null;
+  }
+
+  interface IError {
+    __typename: 'Error';
+    path: string;
+    message: string;
+  }
+
+  interface IMutation {
+    __typename: 'Mutation';
+    login: Array<IError> | null;
+    register: Array<IError> | null;
+  }
+
+  interface ILoginOnMutationArguments {
+    email: string;
+    password: string;
+  }
+
+  interface IRegisterOnMutationArguments {
+    email: string;
+    password: string;
+  }
+}
+
+// tslint:enable

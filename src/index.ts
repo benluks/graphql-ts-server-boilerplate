@@ -2,26 +2,14 @@ const express = require('express');
 import { ApolloServer } from 'apollo-server-express';
 import { createTypeormConn } from './utils/createTypeormConn';
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { GraphQLSchema } from 'graphql';
-import { mergeSchemas } from '@graphql-tools/merge';
 import { redis } from './redis';
 import { confirmEmail } from './routes/confirmEmail';
+import { genSchema } from './utils/generateSchema';
 
 export const startServer = async () => {
-  const schemas: GraphQLSchema[] = [];
-  const folders = fs.readdirSync(path.join(__dirname, './modules'));
-  folders.forEach(async (folder) => {
-    const { resolvers } = require(`./modules/${folder}/resolvers`);
-    const { typeDefs } = require(`./modules/${folder}/schema`);
-
-    schemas.push(makeExecutableSchema({ resolvers, typeDefs }));
-  });
   const app = express();
   const server = new ApolloServer({
-    schema: mergeSchemas({ schemas }),
+    schema: genSchema(),
     context: ({ req }) => ({
       redis,
       url: req.protocol + '://' + req.get('host'),

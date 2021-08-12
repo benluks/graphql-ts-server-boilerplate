@@ -1,4 +1,3 @@
-// import * as Redis from 'ioredis';
 import fetch from 'node-fetch';
 
 import { User } from '../entity/User';
@@ -7,7 +6,6 @@ import { createConfirmEmailLink } from '../utils/createConfirmEmailLink';
 import { createTypeormConn } from '../utils/createTypeormConn';
 
 let userId: string;
-// const redis = new Redis();
 
 beforeAll(async () => {
   await createTypeormConn();
