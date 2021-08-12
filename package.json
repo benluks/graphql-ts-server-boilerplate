@@ -33,6 +33,7 @@
     "@graphql-tools/merge": "^7.0.0",
     "@graphql-tools/stitch": "^8.0.8",
     "apollo-server-express": "^3.1.2",
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
     "connect-redis": "^6.0.0",
     "express": "^4.17.1",
