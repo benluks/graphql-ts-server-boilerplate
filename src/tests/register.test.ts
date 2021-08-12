@@ -2,9 +2,15 @@ import { createTypeormConn } from '../utils/createTypeormConn';
 import { request } from 'graphql-request';
 import { host } from './constants';
 import { User } from '../entity/User';
+import { Connection } from 'typeorm';
+
+let conn: Connection;
 
 beforeAll(async () => {
-  await createTypeormConn();
+  conn = await createTypeormConn();
+});
+afterAll(async () => {
+  await conn.close();
 });
 
 const mutation = (e: string, p: string) => `

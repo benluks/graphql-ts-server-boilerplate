@@ -1,4 +1,5 @@
 import request from 'graphql-request';
+import { Connection } from 'typeorm';
 import { User } from '../../entity/User';
 import { host } from '../../tests/constants';
 import { createTypeormConn } from '../../utils/createTypeormConn';
@@ -27,8 +28,13 @@ const login = async (e: string, p: string, errMsg: string) => {
 const email = 'blackbeans@ben.com';
 const password = 'mypassword';
 
+let conn: Connection;
+
 beforeAll(async () => {
-  await createTypeormConn();
+  conn = await createTypeormConn();
+});
+afterAll(async () => {
+  await conn.close();
 });
 
 describe('login', () => {
@@ -41,11 +47,13 @@ describe('login', () => {
 
     // attempt to login
     await login(email, password, 'please confirm email');
-
+  });
+  it('bad password', async () => {
     await User.update({ email: email }, { confirmed: true });
 
     await login(email, 'gsjhbjhbjhehdd', 'invalid login');
-
+  });
+  it('good login', async () => {
     const response = await request(
       host as string,
       loginMutation(email, password)

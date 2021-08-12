@@ -24,6 +24,7 @@ export const startServer = async () => {
     context: ({ req }) => ({
       redis,
       url: req.protocol + '://' + req.get('host'),
+      session,
       cors,
     }),
   });
@@ -32,7 +33,7 @@ export const startServer = async () => {
 
   app.use(
     session({
-      store: new RedisStore({}),
+      store: new RedisStore({ client: redis as any }),
       name: 'bid',
       secret: SESSION_SECRET,
       resave: false,
